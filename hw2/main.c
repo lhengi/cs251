@@ -7,22 +7,16 @@
 //
 
 #include <stdio.h>
-
+int total_missing_called = 0;
 int findMissing(int* array,int min, int max)
 {
+    total_missing_called++;
     if(array[min] == min && array[max] == max)
     {
         return -1;
     }
     
-    int copy_array[17];
-    int i;
-    for(i = 0; i < 17; i++)
-    {
-        copy_array[i] = array[i];
-    }
-    
-    
+
     
     int medium = (max-min)/2;
     
@@ -41,6 +35,7 @@ int findMissing(int* array,int min, int max)
     
     if(min!= 0 && min < array[min])
     {
+        printf("Here\n");
         return min;
     }
     else if (min == 0 && array[min] != 0)
@@ -103,11 +98,12 @@ int main(int argc, const char * argv[]) {
     // insert code here...
     printf("Hello, World!\n");
     
-    int arrary[] = {0,1,2,4 };
-    int missing = findMissing(arrary, 0, 4);
+    int arrary[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,14,15,16 };
+    int missing = findMissing(arrary, 0, 15);
+    
     
     //printf("Expecting 13\n");
-    printf("Result: %d\n\n\n",missing);
+    printf("Result: %d\nRun Time: %d\n\n",missing,total_missing_called);
     
     printf("begin silly_sort\n\n");
     

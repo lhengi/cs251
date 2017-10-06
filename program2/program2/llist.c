@@ -3,15 +3,23 @@
 #include "list.h"
 
 
+/*
 typedef struct node {
     ElemType val;
     struct node *next;
-} NODE;
+    struct node* pre;
+} Node;
+*/
 
+struct node {
+    ElemType val;
+    struct node *next;
+    struct node* pre;
+};
 
 struct list_struct {
-    NODE *front;
-    NODE *back;
+    Node *front;
+    Node *back;
 };
 
 
@@ -27,8 +35,8 @@ LIST *l = malloc(sizeof(LIST));
 }
 
 void lst_free(LIST *l) {
-NODE *p = l->front;
-NODE *pnext;
+Node *p = l->front;
+Node *pnext;
 
   while(p != NULL) {
     pnext = p->next;   // keeps us from de-referencing a freed ptr
@@ -40,7 +48,7 @@ NODE *pnext;
 }
 
 void lst_print(LIST *l) {
-NODE *p = l->front;
+Node *p = l->front;
 
   printf("[");
   while(p != NULL) {
@@ -62,7 +70,7 @@ void lst_print_rev(LIST *l) {
 }
 
 void lst_push_front(LIST *l, ElemType val) {
-NODE *p = malloc(sizeof(NODE));
+Node *p = malloc(sizeof(Node));
 
   p->val = val;
   p->next = l->front;
@@ -73,12 +81,12 @@ NODE *p = malloc(sizeof(NODE));
 }
 
 void lst_push_back(LIST *l, ElemType val) {
-NODE *p;
+Node *p;
 
   if(l->back == NULL)   // list empty - same as push_front
 	lst_push_front(l, val);
   else {  // at least one element before push
-	p = malloc(sizeof(NODE));
+	p = malloc(sizeof(Node));
 	p->val = val;
 	p->next = NULL;
 	l->back->next = p;
@@ -88,7 +96,7 @@ NODE *p;
 }
 
 int lst_length(LIST *l) {
-NODE *p = l->front;
+Node *p = l->front;
 int n=0;
 
   while(p != NULL) {
@@ -157,7 +165,7 @@ int lst_sanity3(LIST *l) {
 
 ElemType lst_pop_front(LIST *l) {
 ElemType ret;
-NODE *p;
+Node *p;
  
 
   if(lst_is_empty(l))
@@ -212,8 +220,8 @@ void lst_reverse(LIST *l) {
 *   0 or 1 depending on whether x was found
 */
 int lst_remove_first(LIST *l, ElemType x) {
-NODE *p;
-NODE *tmp;
+Node *p;
+Node *tmp;
 
   if(l->front == NULL) return 0;
   if(l->front->val == x) {

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "findMissing:main.c">
+      </ContextState>
+      <ContextState
+         contextName = "swap:main.c">
+      </ContextState>
+      <ContextState
+         contextName = "silly_sort:main.c">
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>

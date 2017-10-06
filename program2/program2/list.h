@@ -14,6 +14,7 @@ typedef int ElemType;
 
 // hidden implementation of list_struct
 typedef struct list_struct LIST;
+typedef struct node Node;
 
 extern LIST *lst_create(); 
 extern void lst_free(LIST *l);

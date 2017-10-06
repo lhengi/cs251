@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "list.h"
+//#include "list.h"
+// self defining everything needed
 #include "sq.h"
 
 
@@ -20,26 +21,79 @@
 *		ADT previously developed.
 */
 
+typedef struct node {
+    ElemType val;
+    struct node *next;
+    struct node* pre;
+} Node;
+
+
+struct list_struct {
+    Node *front;
+    Node *back;
+};
+
+
+LIST *lst_create() {
+    LIST *l = malloc(sizeof(LIST));
+    
+    l->front = NULL;
+    l->back = NULL;
+    return l;
+}
+
+void lst_print(LIST *l) {
+    NODE *p = l->front;
+    
+    printf("[");
+    while(p != NULL) {
+        printf(FORMAT, p->val);
+        p = p->next;
+    }
+    printf("]\n");
+}
+
+void lst_free(LIST *l) {
+    NODE *p = l->front;
+    NODE *pnext;
+    
+    while(p != NULL) {
+        pnext = p->next;   // keeps us from de-referencing a freed ptr
+        free(p);
+        p = pnext;
+    }
+    // now free the LIST
+    free(l);
+}
+
 struct service_queue {
     LIST * the_queue;
     LIST * buzzer_bucket;
+    Node** array;
+    int que_length;
+    int capacity;
 };
+
 
 /**
 * Function: sq_create()
 * Description: creates and intializes an empty service queue.
 * 	It is returned as an SQ pointer.
 */
-SQ * sq_create() {
-SQ *q;
+SQ * sq_create()
+{
+    SQ *q;
 
-  q = malloc(sizeof(SQ));
+    q = malloc(sizeof(SQ));
 
-  q->the_queue = lst_create();
-  q->buzzer_bucket = lst_create();
-
-  return q;
+    q->the_queue = lst_create();
+    q->buzzer_bucket = lst_create();
+    q->que_length = 0;
+    q->array = (Node**)malloc(sizeof(Node*)*8)
+    q->capacity = 8;
+    return q;
 }
+
 
 /**
 * Function: sq_free()
@@ -55,12 +109,14 @@ SQ *q;
 * RUNTIME ACHIEVED:  ???
 *
 */
-void sq_free(SQ *q) {
+void sq_free(SQ *q)
+{
 
-  lst_free(q->the_queue);
-  lst_free(q->buzzer_bucket);
+    lst_free(q->the_queue);
+    lst_free(q->buzzer_bucket);
+    free(q->array);
 
-  free(q);
+    free(q);
 }
 
 /**
@@ -70,6 +126,9 @@ void sq_free(SQ *q) {
 * REQUIRED RUNTIME:  O(N)  (N is the current queue length).
 * ACHIEVED RUNTIME:  O(N)  YAY!!
 */
+
+
+
 void sq_display(SQ *q) {
 
   printf("current-queue contents:\n    ");
@@ -85,7 +144,7 @@ void sq_display(SQ *q) {
 * ACHIEVED RUNTIME:  ???
 */
 int  sq_length(SQ *q) {
-  return lst_length(q->the_queue);
+  return q->que_length;
 }
 
 /**
@@ -104,27 +163,40 @@ int  sq_length(SQ *q) {
 *
 * ACHIEVED RUNTIME:  ???
 */
-int  sq_give_buzzer(SQ *q) {
-int buzzer;
+int lst_is_empty(LIST *l) {
+    return l->front == NULL;
+}
 
-  if(!lst_is_empty(q->buzzer_bucket)) {
-	buzzer = lst_pop_front(q->buzzer_bucket);
-	lst_push_back(q->the_queue, buzzer);
-	return buzzer;
-  }
-  else {
-	/*  invariant:  
-		if no re-useable buzzers, the buzzers 
-		in the queue are {0,1,2,...,N-1} where
-		N is the queue length.
+int que2buc(SQ *q)
+{
+    //Node* pTemp =
+}
 
-		Thus, the smallest available new buzzer 
-		is N
-	*/
-	buzzer = sq_length(q);
-	lst_push_back(q->the_queue, buzzer);
-	return buzzer;
-  }
+int  sq_give_buzzer(SQ *q)
+{
+    int buzzer;
+
+    if(!lst_is_empty(q->buzzer_bucket))
+    {
+        
+        
+        
+        return buzzer;
+    }
+
+    
+    /*  invariant:
+        if no re-useable buzzers, the buzzers 
+        in the queue are {0,1,2,...,N-1} where
+        N is the queue length.
+
+        Thus, the smallest available new buzzer 
+        is N
+    */
+    buzzer = sq_length(q);
+    lst_push_back(q->the_queue, buzzer);
+    return buzzer;
+    
 }
 
 /**

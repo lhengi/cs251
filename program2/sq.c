@@ -205,6 +205,7 @@ void sq_display(SQ *q) {
     printf("current-queue contents:\n    ");
     lst_print(q->the_queue);
     printf("\n");
+    /*
     printf("Current bucket:\n   ");
     lst_print(q->buzzer_bucket);
     printf("\n");
@@ -226,6 +227,7 @@ void sq_display(SQ *q) {
         
     }
     printf("End Array***\n");
+     */
 }
 
 
@@ -234,7 +236,7 @@ void sq_display(SQ *q) {
  * Description:  see sq.h
  *
  * REQUIRED RUNTIME:  O(1)
- * ACHIEVED RUNTIME:  ???
+ * ACHIEVED RUNTIME:  O(1)
  */
 int  sq_length(SQ *q) {
     return q->que_length;
@@ -243,29 +245,32 @@ int  sq_length(SQ *q) {
 void growArray(SQ* q)
 {
     Node** newArray = (Node**)malloc(sizeof(Node*)*q->capacity*2);
+    //Node newArray[][];
     int i;
-    
+    Node* pTemp;
     for(i = 0; i < q->capacity * 2; i++)
     {
-        if(i < q->capacity)
-        {
-            newArray[i] = q->array[i];
-        }
-        else
-        {
-            newArray[i] = NULL;
-        }
+        newArray[i] = NULL;
+        pTemp = newArray[i];
+    }
+    
+    for(i = 0; i < q->capacity;i++)
+    {
+        newArray[i] = q->array[i];
+        pTemp = newArray[i];
     }
     q->capacity *= 2;
-    
     q->array = newArray;
-    free(newArray);
+    
     
     
 }
 
 //give buzzer to the customer
 //return the buzzer id that was handed to the customer
+// required runtime:  O(1)
+// Achived runtime:   O(1)
+// using array of Node*
 int  sq_give_buzzer(SQ *q)
 {
     // grow the array
@@ -307,6 +312,9 @@ int  sq_give_buzzer(SQ *q)
     
 }
 
+// required runtime:  O(1)
+// Achived runtime:   O(1)
+
 int sq_seat(SQ* q)
 {
     if(lst_is_empty(q->the_queue))
@@ -322,6 +330,9 @@ int sq_seat(SQ* q)
     
 }
 
+
+// required runtime:  O(1)
+// Achived runtime:   O(1)
 int sq_kick_out(SQ* q, int buzzerId)
 {
 
@@ -354,6 +365,7 @@ int sq_kick_out(SQ* q, int buzzerId)
     else
     {
         prepTemp->next = pTemp->next;
+        pTemp->next->pre = prepTemp;// updating pre of next
     }
     
     lst_push_back(q->buzzer_bucket, q->array[buzzerId]);
@@ -363,25 +375,43 @@ int sq_kick_out(SQ* q, int buzzerId)
     return 1;
 }   
 
+
+// required runtime:  O(1)
+// Achived runtime:   O(1)
 int sq_take_bribe(SQ *q, int buzzerId)
 {
     if(buzzerId >= q->capacity || q->array[buzzerId] == NULL)
     {
+        fprintf(stderr, "The buzzer does not exist\n");
         return 0;
     }
     
     if(q->array[buzzerId] == NULL)
     {
         fprintf(stderr, "The buzzer is not in the queue\n");
+        return 0;
     }
     
     // if the id is the head of the list, just return
     // because there's no need
     if(q->array[buzzerId]->pre == NULL)
         return 1;
-    q->array[buzzerId]->pre->next = q->array[buzzerId]->next;
+    
+    Node* pTemp = q->array[buzzerId];
+    Node* prepTemp = q->array[buzzerId]->pre;
+    if(q->array[buzzerId]->next == NULL)
+    { // handle if the buzzer is at the end of the list
+        q->the_queue->back = q->the_queue->back->pre;// move up the back pointer
+        //q->the_queue->back->next = NULL;// set back pointer next to null
+    }
+    else
+    {
+        pTemp->next->pre = prepTemp;// update the next's pre
+    }
+    prepTemp->next = pTemp->next;
+    //q->array[buzzerId]->pre->next = q->array[buzzerId]->next;
+    
     lst_push_front(q->the_queue, q->array[buzzerId]);
-    q->que_length++;
     
     return 1;
 }

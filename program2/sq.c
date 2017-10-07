@@ -43,11 +43,14 @@ int lst_is_empty(LIST *l) {
 
 void lst_print(LIST *l) {
     Node *p = l->front;
-    
+    int i = 0;
     printf("[");
     while(p != NULL) {
-        printf(FORMAT, p->val);
+        printf(" %d", p->val);
         p = p->next;
+        if(i > 999)
+            break;
+        i++;
     }
     printf("]\n");
 }
@@ -68,6 +71,8 @@ void lst_free(LIST *l) {
 // take a node then push it to the front of the list
 void lst_push_front(LIST* l, Node* pTemp)
 {
+    pTemp->next = NULL;
+    pTemp->pre = NULL;
     if(lst_is_empty(l))
     {
         l->front = pTemp;
@@ -80,21 +85,11 @@ void lst_push_front(LIST* l, Node* pTemp)
     
 }
 
-/*
-void lst_push_front(LIST *l, int val) {
-    Node *p = malloc(sizeof(Node));
-    
-    p->val = val;
-    p->next = l->front;
-    
-    l->front = p;
-    if(l->back == NULL)   // was empty, now one elem
-        l->back = p;
-    l->size += 1;
-}*/
 
 void lst_push_back(LIST* l, Node* pTemp)
 {
+    pTemp->next = NULL;
+    pTemp->pre = NULL;
     if(lst_is_empty(l))
     {
         lst_push_front(l, pTemp);
@@ -102,33 +97,25 @@ void lst_push_back(LIST* l, Node* pTemp)
     }
     l->back->next = pTemp;
     pTemp->pre = l->back;
-    l->back = l->back->next;
+    l->back = pTemp;
 }
 
 
-/*
-void lst_push_back(LIST *l, int val) {
-    Node *p;
-    
-    if(l->back == NULL)   // list empty - same as push_front
-        lst_push_front(l, val);
-    else {  // at least one element before push
-        p = malloc(sizeof(Node));
-        p->val = val;
-        p->next = NULL;
-        l->back->next = p;
-        
-        l->back = p;
-        l->size +=1;
-    }
-    
-}*/
 
 Node* lst_pop_front(LIST* l)
 {
     Node* pTemp = l->front;
     l->front = l->front->next;
-    l->front->pre = NULL;
+    if(l->front != NULL)
+    {
+        l->front->pre = NULL;
+    }
+    
+    if(l->front == NULL)
+    {
+        l->back = NULL;
+    }
+    
     
     pTemp->next = NULL;
     pTemp->pre = NULL;
@@ -168,7 +155,12 @@ SQ * sq_create()
     q->the_queue = lst_create();
     q->buzzer_bucket = lst_create();
     q->que_length = 0;
-    q->array = (Node**)malloc(sizeof(Node*)*8)
+    q->array = (Node**)malloc(sizeof(Node*)*8);
+    int i;
+    for(i = 0; i < 8; i++)
+    {
+        q->array[i] = NULL;
+    }
     q->capacity = 8;
     return q;
 }
@@ -213,6 +205,27 @@ void sq_display(SQ *q) {
     printf("current-queue contents:\n    ");
     lst_print(q->the_queue);
     printf("\n");
+    printf("Current bucket:\n   ");
+    lst_print(q->buzzer_bucket);
+    printf("\n");
+    
+    printf("Array:\n");
+    int* arrayCopy = malloc(sizeof(int)* q->capacity);
+    int i;
+    for(i = 0; i < q->capacity;i++)
+    {
+        if(q->array[i] != NULL)
+        {
+            arrayCopy[i] = q->array[i]->val;
+        }
+        else
+        {
+            arrayCopy[i] = -1;
+        }
+        printf(" %d ",arrayCopy[i]);
+        
+    }
+    printf("End Array***\n");
 }
 
 
@@ -232,9 +245,16 @@ void growArray(SQ* q)
     Node** newArray = (Node**)malloc(sizeof(Node*)*q->capacity*2);
     int i;
     
-    for(i = 0; i < q->capacity; i++)
+    for(i = 0; i < q->capacity * 2; i++)
     {
-        newArray[i] = q->array[i];
+        if(i < q->capacity)
+        {
+            newArray[i] = q->array[i];
+        }
+        else
+        {
+            newArray[i] = NULL;
+        }
     }
     q->capacity *= 2;
     
@@ -263,12 +283,21 @@ int  sq_give_buzzer(SQ *q)
         buzzerId = q->que_length;
         pTemp = malloc(sizeof(Node));
         pTemp->val = buzzerId;
-    }
-    else// take buzzer from the bucket
-    {
-        pTemp = lst_pop_front(q->buzzer_bucket);
+        pTemp->pre = NULL;
+        pTemp->next = NULL;
+        lst_push_back(q->the_queue, pTemp);
+        // add to the array
+        q->array[buzzerId] = pTemp;
+        
+        q->que_length++;
+        return buzzerId;
     }
     
+    // take buzzer from the bucket
+    pTemp = lst_pop_front(q->buzzer_bucket);
+    buzzerId = pTemp->val;
+    pTemp->pre = NULL;
+    pTemp->next = NULL;
     lst_push_back(q->the_queue, pTemp);
     // add to the array
     q->array[buzzerId] = pTemp;
@@ -295,21 +324,67 @@ int sq_seat(SQ* q)
 
 int sq_kick_out(SQ* q, int buzzerId)
 {
+
+    
     if(buzzerId >= q->capacity || q->array[buzzerId] == NULL)
     {
+        fprintf(stderr, "The buzzer does not exist\n");
         return 0;
     }
     
-    q->array[buzzerId]->pre = q->array[buzzerId]->next;
+    if(q->array[buzzerId] == NULL)
+    {
+        fprintf(stderr, "The buzzer is not in the queue\n");
+        return 0;
+    }
+    if(q->array[buzzerId]->pre == NULL)
+    {
+        lst_push_back(q->buzzer_bucket, lst_pop_front(q->the_queue));
+        q->array[buzzerId] = NULL;
+        q->que_length--;
+        return 1;
+    }
+    Node* pTemp = q->array[buzzerId];
+    Node* prepTemp = pTemp->pre;
+    if(pTemp->next == NULL)// if next is null, then this is the tail
+    {
+        q->the_queue->back = prepTemp;
+        prepTemp->next = NULL;
+    }
+    else
+    {
+        prepTemp->next = pTemp->next;
+    }
     
     lst_push_back(q->buzzer_bucket, q->array[buzzerId]);
     q->array[buzzerId] = NULL;
     q->que_length--;
     
     return 1;
+}   
+
+int sq_take_bribe(SQ *q, int buzzerId)
+{
+    if(buzzerId >= q->capacity || q->array[buzzerId] == NULL)
+    {
+        return 0;
+    }
+    
+    if(q->array[buzzerId] == NULL)
+    {
+        fprintf(stderr, "The buzzer is not in the queue\n");
+    }
+    
+    // if the id is the head of the list, just return
+    // because there's no need
+    if(q->array[buzzerId]->pre == NULL)
+        return 1;
+    q->array[buzzerId]->pre->next = q->array[buzzerId]->next;
+    lst_push_front(q->the_queue, q->array[buzzerId]);
+    q->que_length++;
+    
+    return 1;
 }
-
-
 
 
 

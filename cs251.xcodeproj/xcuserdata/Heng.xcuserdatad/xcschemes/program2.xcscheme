@@ -26,15 +26,16 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      language = ""
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
       </Testables>
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "B03EDE391F7CD5AC00C11411"
-            BuildableName = "program2"
-            BlueprintName = "program2"
+            BlueprintIdentifier = "B05404CD1F88B2ED00FB76CB"
+            BuildableName = "program2alt"
+            BlueprintName = "program2alt"
             ReferencedContainer = "container:cs251.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -45,6 +46,7 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      language = ""
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
       ignoresPersistentStateOnLaunch = "NO"
@@ -55,9 +57,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "B03EDE391F7CD5AC00C11411"
-            BuildableName = "program2"
-            BlueprintName = "program2"
+            BlueprintIdentifier = "B05404CD1F88B2ED00FB76CB"
+            BuildableName = "program2alt"
+            BlueprintName = "program2alt"
             ReferencedContainer = "container:cs251.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

@@ -4,7 +4,9 @@
 
 /**
  * template code for qsort experiments
- */
+* trying git on ubuntu
+*just testing pushing 
+*/
 
 int num_comps = 0;
 

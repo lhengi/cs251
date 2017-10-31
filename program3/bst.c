@@ -309,25 +309,16 @@ BST * bst_from_sorted_arr(int *a, int n){
 }
 
 //inorder
+//return 1 when success, 0 otherwise
 void to_array(NODE* r, int* array, int* index)
 {
     if(r == NULL)
-    {
         return;
-    }
-
-    if(r->left != NULL)
-    {
-        to_array(r->left, &array[*index],index);
-    }
-    
+    to_array(r->left, array, index);
     array[*index] = r->val;
-    *index += 1;
+    (*index)++;
+    to_array(r->right, array, index);
     
-    if(r->right != NULL)
-    {
-        to_array(r->right, &array[*index],index);
-    }
 }
 
 int * bst_to_array(BST * t)
@@ -337,6 +328,72 @@ int * bst_to_array(BST * t)
     to_array(t->root, array,&index);
     return array;
 }
+
+
+int get_ith(NODE* r, int i, int* current_position)
+{
+    if(*current_position == i)
+    {
+        return r->val;
+    }
+    if(r == NULL)
+        return 0;
+    
+    //only return 0 or the ith value, so it's ok to add
+    int return_var = 0;
+    return_var += get_ith(r->left, i, current_position);
+    *current_position += 1;
+    return_var += get_ith(r->right, i, current_position);
+    *current_position += 1;
+    
+    return return_var;
+    
+}
+
+
+// get the ith smallest value
+int bst_get_ith(BST *t, int i)
+{
+    if(i > bst_size(t))
+    {
+        fprintf(stderr, "Ther is no i th element in the tree");
+        return -999999;
+    }
+    
+    int current_position = 0;
+    return get_ith(t->root, i, &current_position);
+}
+
+
+
+
+
+
+
+
+//
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

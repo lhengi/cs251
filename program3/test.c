@@ -42,8 +42,15 @@ int main(){
 
     bst_inorder(t);
     bst_preorder(t);
-    bst_free(t);
-
+    //bst_free(t);
+    
+    printf("Start bst_to_array\n");
+    int* array_from_tree = bst_to_array(t);
+    for(i = 0; i < bst_size(t);i++)
+    {
+        printf(" %d",array_from_tree[i]);
+    }
+    printf("end bst_to_array\n");
 
     return 0;
 }

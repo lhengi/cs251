@@ -490,11 +490,27 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "program3/test.c"
-            timestampString = "531129621.587298"
+            timestampString = "531132058.105921"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "48"
             endingLineNumber = "48"
+            landmarkName = "main"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "program3/test.c"
+            timestampString = "531132058.105994"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "57"
+            endingLineNumber = "57"
             landmarkName = "main"
             landmarkType = "9">
          </BreakpointContent>

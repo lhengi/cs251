@@ -180,13 +180,16 @@ int bst_remove(BST * t, int x)
     return success;
 }
 
-static int size(NODE *r){
+
+// now size function is O(1)
+static int size(NODE *r)
+{
 
     if(r==NULL) return 0;
-    return size(r->left) + size(r->right) + 1;
+    return r->left_nodes + r->right_nodes + 1;
 }
-int bst_size(BST * t){
-
+int bst_size(BST * t)
+{
     return size(t->root);
 }
 
@@ -329,7 +332,7 @@ int * bst_to_array(BST * t)
     return array;
 }
 
-
+/*
 int get_ith(NODE* r, int i, int* current_position)
 {
     if(*current_position == i)
@@ -348,30 +351,167 @@ int get_ith(NODE* r, int i, int* current_position)
     
     return return_var;
     
+}*/
+
+int get_ith(NODE* r, int i,int tree_size)
+{
+    if(r == NULL)
+    {
+        fprintf(stderr, "r is NULL");
+        return -99999999;
+    }
+    if(r->left_nodes + 1 == i || i == tree_size - r->right_nodes)
+        return r->val;
+    if(i <= r->left_nodes)
+        return get_ith(r->left, i, tree_size);
+    
+    return get_ith(r->right, i, tree_size);
 }
 
 
 // get the ith smallest value
 int bst_get_ith(BST *t, int i)
 {
-    if(i > bst_size(t))
+    if(i > bst_size(t) || i <= 0)
     {
-        fprintf(stderr, "Ther is no i th element in the tree");
+        fprintf(stderr, "*** Error, There is no i th element in the tree\n");
         return -999999;
     }
+    //int current_position = 0;
+    return get_ith(t->root, i,bst_size(t));
+}
+
+int get_left_most(NODE* r)
+{
+    if(r == NULL)
+    {
+        fprintf(stderr, "GET most left, the node is null in the first place\n");
+        return -999999999;
+    }
+    if(r->left == NULL)
+        return r->val;
     
-    int current_position = 0;
-    return get_ith(t->root, i, &current_position);
+    return get_most_left(r->left);
+}
+
+int get_right_most(NODE* r)
+{
+    if(r == NULL)
+    {
+        fprintf(stderr, "Get most right, the node is null in the first place\n");
+        return -9999999;
+    }
+    
+    
+    if(r->right == NULL)
+        return r->val;
+    return get_right_most(r->right);
+}
+
+int get_nearest(NODE* r, int x)
+{
+    
+    if(r->val == x)
+        return r->val;
+    
+    if(x < r->val)
+    {
+        
+        if(r->left == NULL)
+        {
+            return r->val;
+        }
+        
+        
+        if(r->left->val <= x)
+        {
+            return get_nearest(r->left, x);
+        }
+        
+        // handle if x is between r and r left most node
+        int right_most = get_right_most(r->left);
+        
+        // if x is not between r and r left most node
+        // then if must be on the r's left sub tree
+        if(right_most >= x)
+            return get_nearest(r->left, x);
+        
+        int distance_from_sub = x - right_most;
+        int distance_from_root = r->val - x;
+        if(distance_from_sub < distance_from_root)
+            return right_most;
+        return r->val;
+    }
+    
+    if(r->right == NULL)
+        return r->val;
+    if(r->right->val >= x)
+        return get_nearest(r->right, x);
+    
+    int left_most = get_left_most(r->right);
+    
+    // if x is not between root and left most
+    // then it must be on the r's right subtree
+    if(left_most <= x)
+        return get_nearest(r->right, x);
+    int distance_from_sub = left_most - x;
+    int distance_from_root = x - r->val;
+    if(distance_from_sub < distance_from_root)
+        return left_most;
+    return r->val;
+    
 }
 
 
+int bst_get_nearest(BST *t, int x)
+{
+    if(t == NULL)
+    {
+        fprintf(stderr, "The tree is not initialized\n");
+        return -999999;
+    }
+    
+    return get_nearest(t->root, x);
+}
+
+int num_geq(NODE* r, int x)
+{
+    if(r == NULL)
+        return 0;
+    if(r->val < x)
+        return num_geq(r->right, x);
+    return size(r);
+}
+int bst_num_geq(BST *t, int x)
+{
+    return num_geq(t->root, x);
+}
+
+int num_leq(NODE* r, int x)
+{
+    if(r == NULL)
+        return 0;
+    if(r->val > x)
+        return num_leq(r->left, x);
+    return size(r);
+    
+}
+
+int bst_num_leq(BST* t, int x)
+{
+    return num_leq(t->root, x);
+}
 
 
-
-
-
-
-//
+int bst_num_range(BST* t, int min, int max)
+{
+    int total_size = bst_size(t);
+    int total_greater_than_min = bst_num_geq(t, min);
+    int total_less_than_max = bst_num_leq(t, max);
+    int num_range = (total_size - total_less_than_max) + (total_size - total_greater_than_min);
+    num_range = total_size - num_range;
+    return num_range;
+}
 
 
 

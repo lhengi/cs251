@@ -51,6 +51,10 @@ int main(){
         printf(" %d",array_from_tree[i]);
     }
     printf("end bst_to_array\n");
+    
+    bst_inorder(t);
+    
+    printf("\n get 6 th, %d\n",bst_get_ith(t, 0));
 
     return 0;
 }

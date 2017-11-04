@@ -21,9 +21,26 @@ int f(int n)
     return f(n - 1) + f(n - 2);
 }
 
+typedef struct Node
+{
+    int x;
+}Node;
+
+void switchNode(Node** r)
+{
+    Node* new_node = malloc(sizeof(Node));
+    new_node->x = 10;
+    *r = new_node;
+}
 
 int main(int argc, const char * argv[]) {
     // insert code here...
+    Node* r;
+    switchNode(&r);
+    printf("After switch node x value %d \n",r->x);
+    
+    
+    
     printf("Hello, World!\n");
     char line[] = {'1','2','\0'};
     int i = 0;

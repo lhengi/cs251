@@ -35,7 +35,9 @@ void bst_free(BST * t){
     free(t);
 }
 
-static NODE * insert(NODE *r, int x)
+
+/* Problematic Retstoring prof's code
+static NODE * insert(NODE *r, int x, int* succes)
 {
     NODE *leaf;
     if(r == NULL)
@@ -46,6 +48,7 @@ static NODE * insert(NODE *r, int x)
         leaf->val = x;
         leaf->left_nodes = 0;
         leaf->right_nodes = 0;
+        *succes = 1;
         return leaf;
     }
 
@@ -54,18 +57,46 @@ static NODE * insert(NODE *r, int x)
     
     if(x < r->val)
     {
-        r->left_nodes++;
-        r->left = insert(r->left, x);
+        
+        r->left = insert(r->left, x, succes);
+        if(*succes == 1)
+            r->left_nodes++;
         return r;
     }
     else
     {
-        r->right_nodes++;
-        r->right = insert(r->right, x);
+        
+        r->right = insert(r->right, x,succes);
+        if(*succes == 1)
+            r->right_nodes++;
         return r;
     }
 
 }
+*/
+/*
+static NODE * insert(NODE *r, int x){
+    NODE *leaf;
+    if(r == NULL){
+        leaf = malloc(sizeof(NODE));
+        leaf->left = NULL;
+        leaf->right = NULL;
+        leaf->val = x;
+        return leaf;
+    }
+    
+    if(r->val == x)
+        return r;
+    if(x < r->val){
+        r->left = insert(r->left, x);
+        return r;
+    }
+    else {
+        r->right = insert(r->right, x);
+        return r;
+    }
+}
+ */
 
 // how about an iterative version?
 static NODE *insert_i(NODE *r, int x)
@@ -73,9 +104,49 @@ static NODE *insert_i(NODE *r, int x)
     return NULL;
 }
 
+// return 1 if successfully inserted, 0 otherwise
+static int insert(NODE** r, int x)
+{
+    NODE* leaf;
+    if(*r == NULL)
+    {
+        leaf = malloc(sizeof(NODE));
+        leaf->left = NULL;
+        leaf->right = NULL;
+        leaf->val = x;
+        leaf->left_nodes = 0;
+        leaf->right_nodes = 0;
+        *r = leaf;
+        return 1;
+    }
+    
+    // when encounter duplicate value
+    if((*r)->val == x)
+    {
+        return 0;
+    }
+    
+    int succes = 0;
+    if(x < (*r)->val)
+    {
+        succes = insert(&((*r)->left), x);
+        if(succes == 1)
+        {
+            (*r)->left_nodes++;
+        }
+        return succes;
+    }
+    
+    succes = insert(&((*r)->right), x);
+    if(succes == 1)
+        (*r)->right_nodes++;
+    return succes;
+}
 
 void bst_insert(BST * t, int x){
-    t->root = insert(t->root, x);
+    //int succes = 0;
+    //t->root = insert(t->root, x);
+    insert(&(t->root), x);
 }
 
 int bst_contains(BST * t, int x){
@@ -144,6 +215,7 @@ static NODE *remove_r(NODE *r, int x, int *success)
         // if we get here, r has two children
         r->val = min_h(r->right);
         r->right = remove_r(r->right, r->val, &sanity);
+        r->right_nodes--;
         if(!sanity)
         {
             printf("ERROR:  remove() failed to delete promoted value?\n");
@@ -288,21 +360,25 @@ void bst_postorder(BST * t){
  * bst_from_sorted_arr(...). The function must return a sub-tree that is
  * perfectly balanced, given a sorted array of elements a.
  */
-static NODE * from_arr(int *a, int n){
-int m;
-NODE *root;
+static NODE * from_arr(int *a, int n)
+{
+    int m;
+    NODE *root;
 
     if(n <= 0) return NULL;
     m = n/2;
     root = malloc(sizeof(NODE));
     root->val = a[m];
     root->left = from_arr(a, m);
+    root->left_nodes = m;
     root->right = from_arr(&(a[m+1]), n-(m+1));
+    root->right_nodes = n - m-1;
     return root;
 
 }
 
-BST * bst_from_sorted_arr(int *a, int n){
+BST * bst_from_sorted_arr(int *a, int n)
+{
 
   BST * t = bst_create();
 
@@ -312,7 +388,6 @@ BST * bst_from_sorted_arr(int *a, int n){
 }
 
 //inorder
-//return 1 when success, 0 otherwise
 void to_array(NODE* r, int* array, int* index)
 {
     if(r == NULL)
@@ -391,7 +466,7 @@ int get_left_most(NODE* r)
     if(r->left == NULL)
         return r->val;
     
-    return get_most_left(r->left);
+    return get_left_most(r->left);
 }
 
 int get_right_most(NODE* r)
@@ -478,15 +553,18 @@ int num_geq(NODE* r, int x)
 {
     if(r == NULL)
         return 0;
-    if(r->val < x)
-        return num_geq(r->right, x);
-    return size(r);
+    if(r->val >= x)
+    {
+        return num_geq(r->left, x) + r->right_nodes + 1;
+    }
+    return num_geq(r->right, x);
 }
 int bst_num_geq(BST *t, int x)
 {
     return num_geq(t->root, x);
 }
 
+/*
 int num_leq(NODE* r, int x)
 {
     if(r == NULL)
@@ -495,11 +573,11 @@ int num_leq(NODE* r, int x)
         return num_leq(r->left, x);
     return size(r);
     
-}
+}*/
 
 int bst_num_leq(BST* t, int x)
 {
-    return num_leq(t->root, x);
+    return bst_size(t) - bst_num_geq(t, x) + 1;
 }
 
 

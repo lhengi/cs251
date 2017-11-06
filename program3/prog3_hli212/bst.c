@@ -502,37 +502,20 @@ int get_ith(NODE* r, int i, int* current_position)
     
 }*/
 
-int get_ith(NODE* r, int i,int last_left, int last_i)
+
+int get_ith(NODE* r, int i,int tree_size)
 {
-    int current_index;
     if(r == NULL)
     {
         fprintf(stderr, "r is NULL");
         return -99999999;
     }
-    if(last_left == 1)
-    {
-        current_index = last_i - r->right_nodes - 1;
-    }
-    else if(last_left == 0)
-    {
-        current_index = last_i + r->left_nodes + 1;
-    }
-    else
-    {
-        current_index = last_i;
-    }
-    
-    if(current_index == i)
+    if(r->left_nodes + 1 == i || i == tree_size - r->right_nodes)
         return r->val;
+    if(i <= r->left_nodes)
+        return get_ith(r->left, i, tree_size);
     
-    if(i < current_index)
-    {
-        return get_ith(r->left, i,1, current_index);
-    }
-    
-    return get_ith(r->right, i, 0, current_index);
-    
+    return get_ith(r->right, i, tree_size);
 }
 
 
@@ -542,10 +525,10 @@ int bst_get_ith(BST *t, int i)
     if(i > bst_size(t) || i <= 0)
     {
         fprintf(stderr, "*** Error, There is no i th element in the tree\n");
-        return -1;
+        return -999999;
     }
     //int current_position = 0;
-    return get_ith(t->root, i,-1,t->root->left_nodes+1);
+    return get_ith(t->root, i,bst_size(t));
 }
 
 int get_left_most(NODE* r)
@@ -590,12 +573,17 @@ int get_nearest(NODE* r, int x)
         }
         
         
+        if(r->left->val <= x)
+        {
+            return get_nearest(r->left, x);
+        }
+        
         // handle if x is between r and r left most node
         int right_most = get_right_most(r->left);
         
         // if x is not between r and r left most node
         // then if must be on the r's left sub tree
-        if(x < right_most)
+        if(right_most >= x)
             return get_nearest(r->left, x);
         
         int distance_from_sub = x - right_most;
@@ -607,12 +595,14 @@ int get_nearest(NODE* r, int x)
     
     if(r->right == NULL)
         return r->val;
+    if(r->right->val >= x)
+        return get_nearest(r->right, x);
     
     int left_most = get_left_most(r->right);
     
     // if x is not between root and left most
     // then it must be on the r's right subtree
-    if(x > left_most)
+    if(left_most <= x)
         return get_nearest(r->right, x);
     int distance_from_sub = left_most - x;
     int distance_from_root = x - r->val;
@@ -662,9 +652,7 @@ int num_leq(NODE* r, int x)
 
 int bst_num_leq(BST* t, int x)
 {
-    if(x < get_left_most(t->root))
-        return 0;
-    return bst_size(t) - bst_num_geq(t, x)+1;
+    return bst_size(t) - bst_num_geq(t, x) + 1;
 }
 
 

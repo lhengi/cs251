@@ -1,5 +1,6 @@
 
 
+
 Sample test program(s) for the bst project.
 
 
@@ -33,5 +34,6 @@ t0.c:  builds a BST of size N by inserting
 
 
 t1.c
-      Extension of t1.c that includes deletion of the even 
+      Extension of t1.c th
+      t includes deletion of the even 
       integers in the range.

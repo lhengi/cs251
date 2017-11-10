@@ -24,13 +24,8 @@ typedef struct {
   int a, b, c;
 } JUNK;
 
-// #define TIME_TRIALS 100000
-
-int TIME_TRIALS = 100;
-
-void set_ntrials(int ntrials) {
-  TIME_TRIALS = ntrials;
-}
+#define NLISTS 10
+#define TIME_TRIALS 100000
 
 
 
@@ -96,7 +91,6 @@ void set_ntrials(int ntrials) {
 	    printf("     TOO SLOW!\n"); \
 	    printf("     MAX-TIME ALLOWED:  %ld\n", max_time); \
 	    printf("     TIME TAKEN:        %ld\n", diff); \
-	    printf("     (NUM-TRIALS:       %i\n", TIME_TRIALS); \
 	    NFailed++; \
 	} \
 	else { \
@@ -370,9 +364,7 @@ clock_t calibrate_nlogn(int n, int ntrials) {
   }
   end = clock();
 
-	diff = end - start;
-	if(diff==0)
-	  printf("calibrate_nlogn warning: elapsed time = 0?\n");
+  diff = end - start;
   return Fudge * diff;
 }
   

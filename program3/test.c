@@ -101,14 +101,14 @@ int main(){
     {
         bst_insert(t, i);
         if(bst_height(t) > max_sb_height(bst_size(t)))
-            printf("FAIL\n");
+            printf("***FAIL\n");
         
     }
     for(i = 1; i < temp; i++)
     {
         bst_remove(t, i);
         if(bst_height(t) > max_sb_height(bst_size(t)))
-            printf("FAIL\n");
+            printf("***FAIL\n");
         
     }
     if(bst_size(t) == 0)
@@ -129,7 +129,7 @@ int main(){
         bst_insert(t, i);
         ith = bst_get_ith(t, i);
         if(ith != i)
-            printf("FAIL\n");
+            printf("***FAIL\n");
     }
     
     for(i = 1; i < temp; i++)
@@ -163,10 +163,15 @@ int main(){
     
     for(i = 1; i < temp; i++)
     {
+        if(i == 9999)
+        {
+            printf("at 9999\n");
+        }
         bst_insert(t, i);
         ith = bst_get_ith(t, temp + 1);
+        
         if(ith != -1)
-            printf("FAIL\n");
+            printf("***FAIL\n");
     }
     
     for(i = 1; i < temp; i++)
@@ -188,7 +193,7 @@ int main(){
         bst_insert(t, i);
         geq = bst_num_geq(t, val);
         if(geq != bst_size(t))
-            printf("FAIL\n");
+            printf("***FAIL\n");
     }
     
     printf("Another test..\n");
@@ -196,7 +201,7 @@ int main(){
     {
         geq = bst_num_geq(t, i);
         if(geq != (temp - i + 1))
-            printf("FAIL\n");
+            printf("***FAIL\n");
     }
     printf("Test over.\n");
     printf("Another test..\n");
@@ -205,7 +210,7 @@ int main(){
     {
         geq = bst_num_geq(t, temp + 1);
         if(geq != 0)
-            printf("FAIL\n");
+            printf("***FAIL\n");
     }
     
     printf("Test over.\n");
@@ -231,7 +236,7 @@ int main(){
         bst_insert(t, i);
         geq = bst_num_leq(t, val);
         if(geq != 1)
-            printf("FAIL\n");
+            printf("***FAIL\n");
     }
     
     printf("Another test..\n");
@@ -239,7 +244,7 @@ int main(){
     {
         geq = bst_num_leq(t, i);
         if(geq != i)
-            printf("FAIL\n");
+            printf("***FAIL\n");
     }
     printf("Test over.\n");
     
@@ -250,7 +255,7 @@ int main(){
     {
         geq = bst_num_leq(t, 0);
         if(geq != 0)
-            printf("FAIL\n");
+            printf("***FAIL\n");
     }
     printf("Test over.\n");
     
@@ -307,7 +312,7 @@ int main(){
         bst_insert(t, i);
         val = bst_get_nearest(t, i);
         if(val != i)
-            printf("FAIL\n");
+            printf("***FAIL\n");
     }
     
     for(i = 1; i < temp; i++)
@@ -326,10 +331,10 @@ int main(){
     {
         val = bst_get_nearest(t, i - 1);
         if(val != i)
-            printf("FAIL\n");
+            printf("***FAIL\n");
         val = bst_get_nearest(t, i + 1);
         if(val != i)
-            printf("FAIL\n");
+            printf("***FAIL\n");
     }
     
     printf("Test over (removing in strange way to provoke errors..\n");
@@ -346,22 +351,22 @@ int main(){
     
     t = bst_from_sorted_arr(arr, arrSize);
     if(bst_height(t) > max_sb_height(bst_size(t)))
-        printf("FAIL\n");
+        printf("***FAIL\n");
     
     if(bst_size(t) != arrSize)
         printf("FAIL (sizes don't match)\n");
     
     val = bst_get_ith(t, 1);
     if(val != arr[0])
-        printf("FAIL\n");
+        printf("***FAIL\n");
     
     val = bst_num_geq(t, arr[arrSize - 1]);
     if(val != 1)
-        printf("FAIL\n");
+        printf("***FAIL\n");
     
     val = bst_num_leq(t, arr[0]);
     if(val != 1)
-        printf("FAIL\n");
+        printf("***FAIL\n");
     
     for(i = -100; i < (arrSize + 200); i++)
         bst_remove(t, i);
@@ -383,7 +388,7 @@ int main(){
     for(i = 0; i < temp - 2; i++)
     {
         if(newArr[i] > newArr[i+1])
-            printf("FAIL\n");
+            printf("***FAIL\n");
     }
     free(newArr);
     for(i = -100; i < (temp + 200); i++)

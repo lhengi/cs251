@@ -27,9 +27,22 @@ I also changed the BST:
 Which functions did you need to modify as a result of the augmentations from the previous
 question?  
 I modified :
-remove_r(r, int x) --> NODE *remove_r(NODE *r, int x, int *success, int pre_val)
-insert(r, int x) --> int insert(NODE** r, int x, int pre_bal)
+void bst_insert(BST * t, int x)
+    call the contains function to check if the tree already has the value--- log n
+    if the tree does not have the vaue then insert it                    --- log n
+    walk along the path of inserted value check if need to rebalance     --- log n (generally)
+        if need balance then rebalance it
+    overall runtime log n + log n + log n = 3 log n ---> O(log n)
+
+int bst remove
+    call the contains function to check if the tree already has the value--- log n
+    if the tree does have the vaue then delete it                        --- log n
+    walk along the path of deleted value check if need to rebalance      --- log n (generally)
+        if need balance then rebalance it
+    overall runtime log n + log n + log n = 3 log n ---> O(log n)
+
 NODE * from_arr(int *a, int n)
+    added some bookkeeping stuff
 
 
 
@@ -38,26 +51,23 @@ NODE * from_arr(int *a, int n)
 For each function from the previous question, how did you ensure that the (assymptotic) runtime 
 remained the same?
 
-For insert():
-I changed the return type to int, it will return 1 if successfully inserted 0 if did not.
-(This does not change the runtime)
-Then I changed the parameters that if need to (NODE** r, int x, int pre_bal)
-pre_bal == 1, then root will do the rebalance, == 0 then the parent is balanced even after the insertion.
-
-Changing from NODE* r to NODE** r is because I want the function to return an int, and I still want to be able to change the NODE 
-This is just for bookkeeping purposes, so the runtime will not change.
-Then I added automatic rebalance, as we proved in class even after adding the size balancing to it the runtime will still be generally the same log n
-
 For remove_r():
-I added int pre_bal:
-Again this is for size balancing, and we have proved that after adding size balancing the runtime is still generally the same log n
+call the contains function to check if the tree already has the value--- log n
+if the tree does have the vaue then delete it                        --- log n
+walk along the path of deleted value check if need to rebalance      --- log n (generally)
+if need balance then rebalance it
+overall runtime log n + log n + log n = 3 log n ---> O(log n)
 
-I also modified for bookkeeping, and again they are all O(1) runtime, so they do not change runtime
+void bst_insert(BST * t, int x)
+call the contains function to check if the tree already has the value--- log n
+if the tree does not have the vaue then insert it                    --- log n
+walk along the path of inserted value check if need to rebalance     --- log n (generally)
+if need balance then rebalance it
+overall runtime log n + log n + log n = 3 log n ---> O(log n)
 
-For from_arr():
-I only modified for bookkeeping, again the additional code has O(1), they do not change the runtime.
+NODE * from_arr(int *a, int n)
+added some bookkeeping stuff, those code are constant runtime, so does not affect the origional runtime
 
-For all the code I modified, I try my best to ensure they have constant runtime, except for the rebalancing. But we already proved they don't really matter.
 
 
 
@@ -88,18 +98,25 @@ bst_get_ith level of completion:  ______5_____
     How did you ensure O(h) runtime?
 
     ANSWER: Because I modified the NODE typedefs, added left_nodes and right_nodes.
-		So when doing get_ith, all the function does is compare
- if left_nodes + 1 is equal to i or not. 
- if left_node + 1 is less than i then recursively call on the right subtree
- if left_node +1 is greater than i then recursively call on the left subtree
-This will give theta(log n) there for it ensure O(h)
+		    With number of left_nodes and number of right_nodes, and the root's index,
+            I can know my current position as I walk along the tree
+            So as I walk along the tree, all I need to do is check if current postion == i
+
+            This will give theta(log n) there for it ensure O(h)
 
 -----------------------------------------------
 bst_get_nearest level of completion:  _____5______  
 
     How did you ensure O(h) runtime?
 
-    ANSWER:
+    ANSWER: First I walk a long the tree until I find compare to the root of the tree decide to go to left or right.
+            If x < r->val, then it will check the right_most node of the left subtree to check if x is between the largest value in the left
+                subtree and the r->val, if x is then choose which ever the one that closer to x
+                if x is not between, then recusively call get_nearest
+            If x > r->val, then it will check the left_most node of the right subtree to check if x is between the smallest value in the right
+                subtree and r->val, if x isthen choose which ever the one that's closer to x
+                if x is not between, then recusively call get_nearest
+
   
 -----------------------------------------------
 bst_num_geq level of completion:  _____5______  
@@ -135,7 +152,10 @@ the given guidelines (including bst_sb_work):
 Write a few sentences describing how you tested your solutions.  Are there
 any tests that in retrospect you wish you'd done?
 
-I built my own test based on test.c, basically inserting and removing a few extra nodes. I will I did prof's test suits for runtime earlier.
+I built my own test based on test.c, basically inserting and removing a few extra nodes.
+I also used michel's test on piazza to test all the function.
+I did professor's t0, t1, t0_prime. However, at least on my machine i could not get the max runtime.
+    But I am confident that my funtions' runtimes are asymptotically the same as required runtime.
 
 
 

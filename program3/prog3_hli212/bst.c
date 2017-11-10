@@ -76,29 +76,7 @@ static NODE * insert(NODE *r, int x, int* succes)
 
 }
 */
-/*
-static NODE * insert(NODE *r, int x){
-    NODE *leaf;
-    if(r == NULL){
-        leaf = malloc(sizeof(NODE));
-        leaf->left = NULL;
-        leaf->right = NULL;
-        leaf->val = x;
-        return leaf;
-    }
-    
-    if(r->val == x)
-        return r;
-    if(x < r->val){
-        r->left = insert(r->left, x);
-        return r;
-    }
-    else {
-        r->right = insert(r->right, x);
-        return r;
-    }
-}
- */
+
 
 //inorder
 void to_array(NODE* r, int* array, int* index)
@@ -173,6 +151,7 @@ static NODE *insert_i(NODE *r, int x)
 }
 
 // return 1 if successfully inserted, 0 otherwise
+/*
 static int insert(BST* t, NODE** r, int x, int pre_bal)
 {
     NODE* leaf;
@@ -236,12 +215,122 @@ static int insert(BST* t, NODE** r, int x, int pre_bal)
         }
     }
     return succes;
+}*/
+
+/*
+ static NODE * insert(BST* t,NODE *r, int x, int pre_bal)
+{
+     NODE *leaf;
+     if(r == NULL)
+     {
+         leaf = malloc(sizeof(NODE));
+         leaf->left = NULL;
+         leaf->right = NULL;
+         leaf->val = x;
+         return leaf;
+     }
+    int current_bal = 0;
+    int next_bal = 0;
+    
+     if(r->val == x)
+         return r;
+     if(x < r->val)
+     {
+         r->left_nodes++;
+         if(pre_bal == 0 && r->left_nodes > 2*r->right_nodes + 1)
+             current_bal = 1;
+         
+         if(current_bal || pre_bal)
+             next_bal = 1;
+         
+         r->left = insert(t,r->left, x,next_bal);
+         if(current_bal == 1)
+         {
+             r = rebalance(t,r);
+         }
+         return r;
+     }
+     else
+     {
+         r->right_nodes++;
+         if(pre_bal == 0 && r->right_nodes > 2*r->left_nodes +1)
+             current_bal = 1;
+         
+         if(current_bal || pre_bal)
+             next_bal = 1;
+         
+         r->right = insert(t,r->right, x,next_bal);
+         if(current_bal == 1)
+         {
+             r = rebalance(t,r);
+         }
+         return r;
+     }
+ }*/
+
+static NODE * insert(NODE *r, int x){
+    NODE *leaf;
+    if(r == NULL){
+        leaf = malloc(sizeof(NODE));
+        leaf->left = NULL;
+        leaf->right = NULL;
+        leaf->left_nodes = 0;
+        leaf->right_nodes = 0;
+        leaf->val = x;
+        return leaf;
+    }
+    
+    if(r->val == x)
+        return r;
+    if(x < r->val)
+    {
+        r->left = insert(r->left, x);
+        r->left_nodes++;
+        return r;
+    }
+    else
+    {
+        r->right = insert(r->right, x);
+        r->right_nodes++;
+        return r;
+    }
+}
+
+// return 0 if did not find any vialation
+int check_bal_call_rebal(BST* t,NODE** r, int x)
+{
+    if((*r) == NULL)
+        return 0;
+    
+    if((*r)->left_nodes > 2 * (*r)->right_nodes + 1 || (*r)->right_nodes > 2 * (*r)->left_nodes + 1)// not balanced
+    {
+        *r = rebalance(t, *r);
+        return 1;
+    }
+    
+    if((*r)->left != NULL && x < (*r)->left->val)
+    {
+        return check_bal_call_rebal(t, &((*r)->left), x);
+    }
+    
+    if((*r)->right != NULL)
+        return check_bal_call_rebal(t, &((*r)->right), x);
+    
+    return 0;
+    
 }
 
 void bst_insert(BST * t, int x){
     //int succes = 0;
-    //t->root = insert(t->root, x);
-    insert(t,&(t->root), x,0);
+    //t->root = insert(t,t->root, x,0);
+    //insert(t,&(t->root), x,0);
+    if(bst_contains(t, x) == 0)
+    {
+        t->root = insert(t->root, x); // at this point, we are certain that insert will be successfuly
+        check_bal_call_rebal(t,&(t->root), x);
+        
+    }
+    
 }
 
 int bst_contains(BST * t, int x){
@@ -278,6 +367,7 @@ static int max_h(NODE *r){
   return r->val;
 }
 
+/*
 static NODE *remove_r(BST* t, NODE *r, int x, int *success, int pre_val)
 {
     NODE   *tmp;
@@ -364,13 +454,62 @@ static NODE *remove_r(BST* t, NODE *r, int x, int *success, int pre_val)
     }
     return r;
 
+}*/
+
+static NODE *remove_r(NODE *r, int x, int *success){
+    NODE   *tmp;
+    int sanity;
+    
+    if(r==NULL){
+        *success = 0;
+        return NULL;
+    }
+    if(r->val == x){
+        *success = 1;
+        
+        if(r->left == NULL){
+            tmp = r->right;
+            free(r);
+            return tmp;
+        }
+        if(r->right == NULL){
+            tmp = r->left;
+            free(r);
+            return tmp;
+        }
+        // if we get here, r has two children
+        r->val = min_h(r->right);
+        r->right = remove_r(r->right, r->val, &sanity);
+        r->right_nodes--;
+        if(!sanity)
+            printf("ERROR:  remove() failed to delete promoted value?\n");
+        return r;
+    }
+    if(x < r->val){
+        r->left = remove_r(r->left, x, success);
+        r->left_nodes--;
+    }
+    else {
+        r->right = remove_r(r->right, x, success);
+        r->right_nodes--;
+    }
+    return r;
+    
 }
+
 
 
 int bst_remove(BST * t, int x)
 {
-    int success;
-    t->root = remove_r(t,t->root, x, &success,0);
+    //int success;
+    //t->root = remove_r(t,t->root, x, &success,0);
+    //return success;
+    if(bst_contains(t, x) == 0)
+        return 0;
+    int success = 0;
+    t->root = remove_r(t->root, x, &success);
+    check_bal_call_rebal(t, &(t->root), x);
+    
     return success;
 }
 
@@ -502,20 +641,37 @@ int get_ith(NODE* r, int i, int* current_position)
     
 }*/
 
-
-int get_ith(NODE* r, int i,int tree_size)
+int get_ith(NODE* r, int i,int last_left, int last_i)
 {
+    int current_index;
     if(r == NULL)
     {
         fprintf(stderr, "r is NULL");
         return -99999999;
     }
-    if(r->left_nodes + 1 == i || i == tree_size - r->right_nodes)
-        return r->val;
-    if(i <= r->left_nodes)
-        return get_ith(r->left, i, tree_size);
+    if(last_left == 1)
+    {
+        current_index = last_i - r->right_nodes - 1;
+    }
+    else if(last_left == 0)
+    {
+        current_index = last_i + r->left_nodes + 1;
+    }
+    else
+    {
+        current_index = last_i;
+    }
     
-    return get_ith(r->right, i, tree_size);
+    if(current_index == i)
+        return r->val;
+    
+    if(i < current_index)
+    {
+        return get_ith(r->left, i,1, current_index);
+    }
+    
+    return get_ith(r->right, i, 0, current_index);
+    
 }
 
 
@@ -524,11 +680,11 @@ int bst_get_ith(BST *t, int i)
 {
     if(i > bst_size(t) || i <= 0)
     {
-        fprintf(stderr, "*** Error, There is no i th element in the tree\n");
-        return -999999;
+        //fprintf(stderr, "*** Error, There is no i th element in the tree\n");
+        return -1;
     }
     //int current_position = 0;
-    return get_ith(t->root, i,bst_size(t));
+    return get_ith(t->root, i,-1,t->root->left_nodes+1);
 }
 
 int get_left_most(NODE* r)
@@ -572,18 +728,15 @@ int get_nearest(NODE* r, int x)
             return r->val;
         }
         
-        
-        if(r->left->val <= x)
-        {
+        if(x <= r->left->val)
             return get_nearest(r->left, x);
-        }
         
         // handle if x is between r and r left most node
         int right_most = get_right_most(r->left);
         
         // if x is not between r and r left most node
         // then if must be on the r's left sub tree
-        if(right_most >= x)
+        if(x < right_most)
             return get_nearest(r->left, x);
         
         int distance_from_sub = x - right_most;
@@ -595,14 +748,15 @@ int get_nearest(NODE* r, int x)
     
     if(r->right == NULL)
         return r->val;
-    if(r->right->val >= x)
+    
+    if(x >= r->right->val)
         return get_nearest(r->right, x);
     
     int left_most = get_left_most(r->right);
     
     // if x is not between root and left most
     // then it must be on the r's right subtree
-    if(left_most <= x)
+    if(x > left_most)
         return get_nearest(r->right, x);
     int distance_from_sub = left_most - x;
     int distance_from_root = x - r->val;
@@ -652,7 +806,9 @@ int num_leq(NODE* r, int x)
 
 int bst_num_leq(BST* t, int x)
 {
-    return bst_size(t) - bst_num_geq(t, x) + 1;
+    if(x < get_left_most(t->root))
+        return 0;
+    return bst_size(t) - bst_num_geq(t, x)+1;
 }
 
 
@@ -670,22 +826,8 @@ int bst_sb_work(BST* t)
 {
     
     
-    return 0;
+    return t->work;
 }
-
-
-int max_sb_height(int n) {
-    unsigned int big;
-    
-    if(n<=0) return -1;
-    if(n==1) return 0;
-    big = (n-1) - (n/3);  // makes as imbalanced as possible within rules
-    //    of being size-balanced
-    
-    return 1 + max_sb_height(big);
-}
-
-
 
 
 

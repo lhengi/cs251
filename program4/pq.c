@@ -10,6 +10,10 @@
 #include <stdlib.h>
 #include "pq.h"
 
+#define Left(i) (2*i)
+#define Right(i) (2*i+1)
+#define Parent(i) (i/2)
+
 typedef struct Node
 {
     int id;
@@ -25,7 +29,7 @@ struct pq_struct
     int minheap;
 };
 
-PQ * pq_create(int capacity, int min_heap)
+PQ* pq_create(int capacity, int min_heap)
 {
     PQ* pq = malloc(sizeof(PQ));
     pq->map = (Node**)malloc(sizeof(Node*)*(capacity+1));
@@ -58,6 +62,48 @@ int valid_id(PQ* pq, int id)
     return 1;
 }
 
+int percolate_up_min(PQ* pq, int index)
+{
+    if(pq->minheap == 0)
+        return 0;
+    if(pq->q[index] == NULL || index <= 1)
+    {
+        return 0;
+    }
+    Node* pTemp;
+    if(pq->q[Parent(index)]->id > pq->q[index]->id)
+    {
+        pTemp = pq->q[Parent(index)];
+        pq->q[Parent(index)] = pq->q[index];
+        pq->q[index] = pTemp;
+        percolate_up_min(pq,Parent(index));
+        
+    }
+    return 1;
+}
+
+int percolate_up_max(PQ* pq, int index)
+{
+    if(pq->minheap == 1)
+        return 0;
+    
+    if(pq->q[index] == NULL || index <= 0)
+    {
+        return 0;
+    }
+    Node* pTemp;
+    if(pq->q[Parent(index)]->id < pq->q[index]->id)
+    {
+        pTemp = pq->q[Parent(index)];
+        pq->q[Parent(index)] = pq->q[index];
+        pq->q[index] = pTemp;
+        percolate_up_max(pq,Parent(index));
+        
+    }
+    return 1;
+}
+
+
 int pq_insert(PQ * pq, int id, double priority)
 {
 
@@ -72,8 +118,8 @@ int pq_insert(PQ * pq, int id, double priority)
     temp->priority = priority;
     pq->q[++pq->size] = temp;
     pq->map[id] = temp;
-    
     // Need to perculate up
+    percolate_up(pq, pq->size);
     
     
     

@@ -7,6 +7,7 @@
 //
 
 #include <stdio.h>
+#define Parent(i) (i*2)
 
 int f(int n)
 {
@@ -35,6 +36,9 @@ void switchNode(Node** r)
 
 int main(int argc, const char * argv[]) {
     // insert code here...
+    printf("Testing: %d\n",Parent(7));
+    return 0;
+    
     Node* r;
     switchNode(&r);
     printf("After switch node x value %d \n",r->x);

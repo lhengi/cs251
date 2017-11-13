@@ -17,6 +17,7 @@
 typedef struct Node
 {
     int id;
+    int index;
     double priority;
 }Node;
 
@@ -66,19 +67,24 @@ int percolate_up_min(PQ* pq, int index)
 {
     if(pq->minheap == 0)
         return 0;
-    if(pq->q[index] == NULL || index <= 1)
+    if(pq->q[index] == NULL || index <= 0)
     {
         return 0;
     }
-    Node* pTemp;
-    if(pq->q[Parent(index)]->id > pq->q[index]->id)
+    
+    Node* temp;
+    if(pq->q[index]->priority < pq->q[Parent(index)]->priority)
     {
-        pTemp = pq->q[Parent(index)];
+        temp = pq->q[Parent(index)];
         pq->q[Parent(index)] = pq->q[index];
-        pq->q[index] = pTemp;
-        percolate_up_min(pq,Parent(index));
+        pq->q[Parent(index)]->index = Parent(index);
+        pq->q[index] = temp;
+        pq->q[index]->index = index;
         
+        percolate_up_min(pq, Parent(index));
     }
+    
+
     return 1;
 }
 
@@ -87,20 +93,111 @@ int percolate_up_max(PQ* pq, int index)
     if(pq->minheap == 1)
         return 0;
     
+    
     if(pq->q[index] == NULL || index <= 0)
     {
         return 0;
     }
-    Node* pTemp;
-    if(pq->q[Parent(index)]->id < pq->q[index]->id)
+    
+    Node* temp;
+    if(pq->q[index]->priority > pq->q[Parent(index)]->priority)
     {
-        pTemp = pq->q[Parent(index)];
+        temp = pq->q[Parent(index)];
         pq->q[Parent(index)] = pq->q[index];
-        pq->q[index] = pTemp;
-        percolate_up_max(pq,Parent(index));
+        pq->q[Parent(index)]->index = Parent(index);//correct the index
         
+        pq->q[index] = temp;
+        pq->q[index]->index = index;
+        
+        percolate_up_max(pq, Parent(index));
     }
     return 1;
+}
+
+int percolate_up(PQ* pq, int index)
+{
+    if(pq->minheap)
+        return percolate_up_min(pq, index);
+    return percolate_up_max(pq, index);
+    
+}
+
+int percolate_down_min(PQ* pq, int index)
+{
+    if(pq->minheap == 0)
+        return 0;
+    if(pq->q[index] == NULL || index <= 0)
+    {
+        return 0;
+    }
+    Node* temp;
+    // Then compare too
+    int nextChild;
+    if(pq->q[Left(index)]->priority < pq->q[Right(index)]->priority)
+    {
+        nextChild = Left(index);
+    }
+    else
+    {
+        nextChild = Right(index);
+    }
+    
+    if(pq->q[nextChild]->priority < pq->q[index]->priority)
+    {
+        temp = pq->q[nextChild];
+        pq->q[nextChild] = pq->q[index];
+        pq->q[nextChild]->index = nextChild;
+        
+        pq->q[index] = temp;
+        pq->q[index]->index = index;
+        
+        percolate_down_min(pq, nextChild);
+    }
+    
+    return 1;
+}
+
+int percolate_down_max(PQ* pq, int index)
+{
+    if(pq->minheap == 1)
+        return 0;
+    if(pq->q[index] == NULL || index <= 0)
+    {
+        return 0;
+    }
+    Node* temp;
+    // Then compare too
+    int nextChild;
+    if(pq->q[Left(index)]->priority > pq->q[Right(index)]->priority)
+    {
+        nextChild = Left(index);
+    }
+    else
+    {
+        nextChild = Right(index);
+    }
+    
+    if(pq->q[nextChild]->priority > pq->q[index]->priority)
+    {
+        temp = pq->q[nextChild];
+        pq->q[nextChild] = pq->q[index];
+        pq->q[nextChild]->index = nextChild;
+        
+        pq->q[index] = temp;
+        pq->q[index]->index = index;
+        
+        percolate_down_max(pq, nextChild);
+    }
+    
+    return 1;
+}
+
+int percolate_down(PQ* pq, int index)
+{
+    if(pq->minheap == 1)
+        return percolate_down_min(pq, index);
+    return percolate_down_max(pq, index);
+    
 }
 
 
@@ -115,14 +212,14 @@ int pq_insert(PQ * pq, int id, double priority)
     
     Node* temp = malloc(sizeof(Node));
     temp->id = id;
+    temp->index = pq->size + 1;
     temp->priority = priority;
     pq->q[++pq->size] = temp;
     pq->map[id] = temp;
-    // Need to perculate up
+    
+    // Need to perculate up and down
     percolate_up(pq, pq->size);
-    
-    
-    
+    percolate_down(pq, temp->index);
     // *******
     return 1;
 }
@@ -140,6 +237,12 @@ int pq_change_priority(PQ * pq, int id, double new_priority)
         
     }
     pq->map[id]->priority = new_priority;
+    
+    // percolate up and down
+    percolate_up(pq, pq->map[id]->index);
+    percolate_down(pq, pq->map[id]->index);
+    
+    
     return 1;
 }
 
@@ -159,8 +262,24 @@ int pq_remove_by_id(PQ * pq, int id)
     {
         fprintf(stderr, "**** id out of range\n");
         return 0;
-        
     }
+    int delete_index = pq->map[id]->index;
+    free(pq->q[delete_index]);
+    pq->q[delete_index] = NULL;
+    
+    if(delete_index == pq->size)
+    {
+        pq->size--;
+        return 1; // deleted last item, no need to percolate
+    }
+    
+    pq->q[delete_index] = pq->q[pq->size];
+    pq->size--;
+    
+    
+    Node* pTemp = pq->q[delete_index];
+    percolate_up(pq, delete_index);
+    percolate_down(pq, pTemp->index);
     
     
     return 1;
@@ -185,6 +304,20 @@ int pq_delete_top(PQ * pq, int *id, double *priority)
     if(!pq_peek_top(pq, id, priority))
         return 0;
     // perculate
+    
+    int delete_id = pq->q[1]->id;
+    pq->map[delete_id] = NULL;
+    
+    free(pq->q[1]);
+    pq->q[1] = NULL;
+    
+    pq->q[1] = pq->q[pq->size];
+    Node* pTemp = pq->q[1];
+    pq->q[pq->size] = NULL;
+    pq->size--;
+    
+    percolate_up(pq, 1);
+    percolate_down(pq, pTemp->index);
     
     return 1;
 }

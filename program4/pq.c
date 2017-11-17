@@ -35,6 +35,12 @@ PQ* pq_create(int capacity, int min_heap)
     PQ* pq = malloc(sizeof(PQ));
     pq->map = (Node**)malloc(sizeof(Node*)*(capacity+1));
     pq->q = (Node**)malloc(sizeof(Node*)*(capacity+1));// index 0 is reserved
+    int i;
+    for(i = 0; i < capacity+1;i++)
+    {
+        pq->map[i] = NULL;
+        pq->q[i] = NULL;
+    }
     pq->capacity = capacity;
     pq->size = 0;
     pq->minheap = min_heap;
@@ -55,7 +61,7 @@ void pq_free(PQ * pq)
 
 int valid_id(PQ* pq, int id)
 {
-    if(id <= 0 || id > pq->capacity)
+    if(id < 0 || id >= pq->capacity)
     {
         return 0;
     }
@@ -73,7 +79,7 @@ int percolate_up_min(PQ* pq, int index)
     }
     
     Node* temp;
-    if(pq->q[index]->priority < pq->q[Parent(index)]->priority)
+    if(!(Parent(index)<= 0 || index <= 0 ) && pq->q[index]->priority < pq->q[Parent(index)]->priority)
     {
         temp = pq->q[Parent(index)];
         pq->q[Parent(index)] = pq->q[index];
@@ -100,7 +106,7 @@ int percolate_up_max(PQ* pq, int index)
     }
     
     Node* temp;
-    if(pq->q[index]->priority > pq->q[Parent(index)]->priority)
+    if(!(Parent(index) <= 0 || index <= 0 ) && pq->q[index]->priority > pq->q[Parent(index)]->priority)
     {
         temp = pq->q[Parent(index)];
         pq->q[Parent(index)] = pq->q[index];
@@ -133,14 +139,32 @@ int percolate_down_min(PQ* pq, int index)
     Node* temp;
     // Then compare too
     int nextChild;
-    if(pq->q[Left(index)]->priority < pq->q[Right(index)]->priority)
+    // need to check for NUll
+    
+    if(pq->q[Left(index)] == NULL || pq->q[Right(index)] == NULL || Right(index) > pq->size || Left(index) > pq->size) // handle if children = NULL
     {
-        nextChild = Left(index);
+        if((pq->q[Left(index)] == NULL &&  pq->q[Right(index)] == NULL) || (Right(index) > pq->size && Left(index) > pq->size))
+            return 1;
+        if(pq->q[Left(index)] != NULL || Left(index) <= pq->size)
+            nextChild = Left(index);
+        else
+            nextChild = Right(index);
+        
     }
     else
     {
-        nextChild = Right(index);
+        if(pq->q[Left(index)]->priority < pq->q[Right(index)]->priority)
+        {
+            nextChild = Left(index);
+        }
+        else
+        {
+            nextChild = Right(index);
+        }
     }
+    
+    if(pq->q[nextChild] == NULL)
+        return 1;
     
     if(pq->q[nextChild]->priority < pq->q[index]->priority)
     {
@@ -168,14 +192,35 @@ int percolate_down_max(PQ* pq, int index)
     Node* temp;
     // Then compare too
     int nextChild;
-    if(pq->q[Left(index)]->priority > pq->q[Right(index)]->priority)
+    Node* parent = pq->q[index];
+    Node* left =pq->q[Left(index)];
+    Node* right =pq->q[Right(index)];
+    
+    if(pq->q[Left(index)] == NULL || pq->q[Right(index)] == NULL || Right(index) > pq->size || Left(index) > pq->size) // handle if children = NULL
     {
-        nextChild = Left(index);
+        if((pq->q[Left(index)] == NULL &&  pq->q[Right(index)] == NULL) || (Right(index) > pq->size && Left(index) > pq->size))
+            return 1;
+        if(pq->q[Left(index)] != NULL || Left(index) <= pq->size)
+            nextChild = Left(index);
+        else
+            nextChild = Right(index);
+        
     }
     else
     {
-        nextChild = Right(index);
+        
+    
+        if(pq->q[Left(index)]->priority > pq->q[Right(index)]->priority)
+        {
+            nextChild = Left(index);
+        }
+        else
+        {
+            nextChild = Right(index);
+        }
     }
+    if(pq->q[nextChild] == NULL)
+        return 1;
     
     if(pq->q[nextChild]->priority > pq->q[index]->priority)
     {
@@ -200,6 +245,104 @@ int percolate_down(PQ* pq, int index)
     
 }
 
+int valid_heap_min(PQ* pq, int index)
+{
+    if(pq->q[index] == NULL)
+    {
+        return 1;
+    }
+    
+    if(pq->q[Left(index)] != NULL&& Left(index) <= pq->size &&  pq->q[Left(index)]->priority < pq->q[index]->priority)
+    {
+        fprintf(stderr, "**** invalid min heap, Left child is less than parent,\n");
+        fprintf(stderr, "Left child ID: %d\tParent ID: %d\n",Left(index),index);
+        fprintf(stderr, "Left priority: %lf\tParent priority: %lf\n",pq->q[Left(index)]->priority,pq->q[index]->priority);
+        return 0;
+    }
+    else if(pq->q[Right(index)] != NULL && Right(index) <= pq->size && pq->q[Right(index)]->priority < pq->q[index]->priority)
+    {
+        fprintf(stderr, "**** invalid min heap, Right child is less than parent,\n");
+        fprintf(stderr, "Right child ID: %d\tParent ID: %d\n",Right(index),index);
+        fprintf(stderr, "Right priority: %lf\tParent priority: %lf\n",pq->q[Right(index)]->priority,pq->q[index]->priority);
+        return 0;
+        
+    }
+    
+    return valid_heap_min(pq, Left(index)) && valid_heap_min(pq, Right(index));
+    
+}
+
+int valid_heap_max(PQ* pq, int index)
+{
+    
+    if(pq->q[index] == NULL)
+    {
+        return 1;
+    }
+    
+    if(pq->q[Left(index)] != NULL && Left(index) <= pq->size && pq->q[Left(index)]->priority > pq->q[index]->priority)
+    {
+        fprintf(stderr, "**** invalid min heap, Left child is less than parent,\n");
+        fprintf(stderr, "Left child ID: %d\tParent ID: %d\n",Left(index),index);
+        fprintf(stderr, "Left priority: %lf\tParent priority: %lf\n",pq->q[Left(index)]->priority,pq->q[index]->priority);
+        return 0;
+    }
+    else if(pq->q[Right(index)] != NULL && Right(index) <= pq->size && pq->q[Right(index)]->priority > pq->q[index]->priority)
+    {
+        fprintf(stderr, "**** invalid min heap, Right child is less than parent,\n");
+        fprintf(stderr, "Right child ID: %d\tParent ID: %d\n",Right(index),index);
+        fprintf(stderr, "Right priority: %lf\tParent priority: %lf\n",pq->q[Right(index)]->priority,pq->q[index]->priority);
+        return 0;
+        
+    }
+    
+    return valid_heap_max(pq, Left(index)) && valid_heap_max(pq, Right(index));
+    
+}
+
+int valid_heap(PQ* pq)
+{
+    if(pq->minheap)
+    {
+        return valid_heap_min(pq, 1);
+    }
+    
+    return valid_heap_max(pq, 1);
+    
+}
+
+void display_heap(PQ* pq)
+{
+    
+    int n = pq->size;
+    int n_cap = pq->capacity;
+    
+    int i;
+    for(i = 1; i <= n; i++)
+    {
+        
+        printf("ID: %d,\tPriority: %lf\tindex: %d\n",pq->q[i]->id,pq->q[i]->priority,i);
+    }
+    
+    printf("========End of display the heap========\n");
+    
+    for(i = 0; i<= n_cap; i++)
+    {
+        if(pq->map[i] == NULL)
+        {
+            printf("ID: %d,\tNULL\n",i);
+        }
+        else
+        {
+            printf("ID: %d,\tPriority: %lf\n",i,pq->map[i]->priority);
+        }
+    }
+    printf("*** End of display\n");
+    
+    
+}
+
+
 
 int pq_insert(PQ * pq, int id, double priority)
 {
@@ -209,6 +352,13 @@ int pq_insert(PQ * pq, int id, double priority)
         fprintf(stderr, "**** id out of range\n");
         return 0;
     }
+    
+    if(pq->map[id] != NULL)
+    {
+        fprintf(stderr, "*** id already exist,to change priority call change priority function\n");
+        return 0;
+    }
+    
     
     Node* temp = malloc(sizeof(Node));
     temp->id = id;
@@ -258,14 +408,22 @@ int pq_capacity(PQ * pq)
 
 int pq_remove_by_id(PQ * pq, int id)
 {
-    if(!valid_id(pq, id))
+    if(!valid_id(pq, id)  )
     {
         fprintf(stderr, "**** id out of range\n");
         return 0;
     }
+    
+    if (pq->map[id] == NULL)
+    {
+        return 1;
+    }
+    
     int delete_index = pq->map[id]->index;
+    pq->map[id] = NULL;
     free(pq->q[delete_index]);
     pq->q[delete_index] = NULL;
+    
     
     if(delete_index == pq->size)
     {
@@ -278,6 +436,8 @@ int pq_remove_by_id(PQ * pq, int id)
     
     
     Node* pTemp = pq->q[delete_index];
+    pTemp->index = delete_index;
+    
     percolate_up(pq, delete_index);
     percolate_down(pq, pTemp->index);
     
@@ -311,8 +471,19 @@ int pq_delete_top(PQ * pq, int *id, double *priority)
     free(pq->q[1]);
     pq->q[1] = NULL;
     
+    
+    
     pq->q[1] = pq->q[pq->size];
+    if(pq->size == 1)
+    {
+        // this means the top is the last thing in the heap
+        free(pq->q[1]);
+        pq->q[1] = NULL;
+        pq->size--;
+        return 1;
+    }
     Node* pTemp = pq->q[1];
+    pTemp->index = 1;
     pq->q[pq->size] = NULL;
     pq->size--;
     
@@ -336,8 +507,6 @@ int pq_get_priority(PQ * pq, int id, double *priority)
     *priority = pq->map[id]->priority;
     return 1;
 }
-
-
 
 
 

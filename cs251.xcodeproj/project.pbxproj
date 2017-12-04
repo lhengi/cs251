@@ -27,6 +27,9 @@
 		B07A17361F79DED5004CEAB5 /* txt.c in Sources */ = {isa = PBXBuildFile; fileRef = B07A17351F79DED5004CEAB5 /* txt.c */; };
 		B08131571FB5A9D100C142CF /* pq.h in Sources */ = {isa = PBXBuildFile; fileRef = B08131561FB5A9D100C142CF /* pq.h */; };
 		B08131601FB5B88300C142CF /* pq.c in Sources */ = {isa = PBXBuildFile; fileRef = B081315F1FB5B88300C142CF /* pq.c */; };
+		B0C151E01FD54972002E326E /* fakemake.c in Sources */ = {isa = PBXBuildFile; fileRef = B0C151DF1FD54972002E326E /* fakemake.c */; };
+		B0C151E51FD549E1002E326E /* hmap.c in Sources */ = {isa = PBXBuildFile; fileRef = B0C151E41FD549E1002E326E /* hmap.c */; };
+		B0C151E81FD549F9002E326E /* freq.c in Sources */ = {isa = PBXBuildFile; fileRef = B0C151E71FD549F8002E326E /* freq.c */; };
 		B0D9BA791F64F37B00692E5C /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = B0D9BA781F64F37B00692E5C /* main.c */; };
 		B0EC2D801F8777A80050DD4B /* driver.c in Sources */ = {isa = PBXBuildFile; fileRef = B0EC2D7B1F8777A70050DD4B /* driver.c */; };
 /* End PBXBuildFile section */
@@ -131,6 +134,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 		};
+		B0C151DB1FD54971002E326E /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
 		B0D9BA731F64F37A00692E5C /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -180,6 +192,12 @@
 		B08131541FB5A9D100C142CF /* program4 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = program4; sourceTree = BUILT_PRODUCTS_DIR; };
 		B08131561FB5A9D100C142CF /* pq.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = pq.h; sourceTree = "<group>"; };
 		B081315F1FB5B88300C142CF /* pq.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = pq.c; sourceTree = "<group>"; };
+		B0C151DD1FD54971002E326E /* program5 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = program5; sourceTree = BUILT_PRODUCTS_DIR; };
+		B0C151DF1FD54972002E326E /* fakemake.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = fakemake.c; sourceTree = "<group>"; };
+		B0C151E41FD549E1002E326E /* hmap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = hmap.c; sourceTree = "<group>"; };
+		B0C151E61FD549EB002E326E /* hmap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = hmap.h; sourceTree = "<group>"; };
+		B0C151E71FD549F8002E326E /* freq.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = freq.c; sourceTree = "<group>"; };
+		B0C151E91FD54A02002E326E /* hmap-readme.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "hmap-readme.txt"; sourceTree = "<group>"; };
 		B0D9BA751F64F37B00692E5C /* cs251 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = cs251; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0D9BA781F64F37B00692E5C /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		B0EC2D7B1F8777A70050DD4B /* driver.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = driver.c; sourceTree = "<group>"; };
@@ -259,6 +277,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		B08131511FB5A9D100C142CF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B0C151DA1FD54971002E326E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -381,6 +406,18 @@
 			path = program4;
 			sourceTree = "<group>";
 		};
+		B0C151DE1FD54972002E326E /* program5 */ = {
+			isa = PBXGroup;
+			children = (
+				B0C151E71FD549F8002E326E /* freq.c */,
+				B0C151E91FD54A02002E326E /* hmap-readme.txt */,
+				B0C151E61FD549EB002E326E /* hmap.h */,
+				B0C151E41FD549E1002E326E /* hmap.c */,
+				B0C151DF1FD54972002E326E /* fakemake.c */,
+			);
+			path = program5;
+			sourceTree = "<group>";
+		};
 		B0D9BA6C1F64F37A00692E5C = {
 			isa = PBXGroup;
 			children = (
@@ -396,6 +433,7 @@
 				B04624321F9718E000557112 /* hw3 */,
 				B06429191FA2418D00617999 /* program3 */,
 				B08131551FB5A9D100C142CF /* program4 */,
+				B0C151DE1FD54972002E326E /* program5 */,
 				B0D9BA761F64F37B00692E5C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -415,6 +453,7 @@
 				B04624311F9718E000557112 /* hw3 */,
 				B06429181FA2418D00617999 /* program3 */,
 				B08131541FB5A9D100C142CF /* program4 */,
+				B0C151DD1FD54971002E326E /* program5 */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -617,6 +656,23 @@
 			productReference = B08131541FB5A9D100C142CF /* program4 */;
 			productType = "com.apple.product-type.tool";
 		};
+		B0C151DC1FD54971002E326E /* program5 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B0C151E31FD54972002E326E /* Build configuration list for PBXNativeTarget "program5" */;
+			buildPhases = (
+				B0C151D91FD54971002E326E /* Sources */,
+				B0C151DA1FD54971002E326E /* Frameworks */,
+				B0C151DB1FD54971002E326E /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = program5;
+			productName = program5;
+			productReference = B0C151DD1FD54971002E326E /* program5 */;
+			productType = "com.apple.product-type.tool";
+		};
 		B0D9BA741F64F37A00692E5C /* cs251 */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = B0D9BA7C1F64F37B00692E5C /* Build configuration list for PBXNativeTarget "cs251" */;
@@ -687,6 +743,10 @@
 						CreatedOnToolsVersion = 9.1;
 						ProvisioningStyle = Automatic;
 					};
+					B0C151DC1FD54971002E326E = {
+						CreatedOnToolsVersion = 9.1;
+						ProvisioningStyle = Automatic;
+					};
 					B0D9BA741F64F37A00692E5C = {
 						CreatedOnToolsVersion = 8.3.3;
 						ProvisioningStyle = Automatic;
@@ -717,6 +777,7 @@
 				B04624301F9718E000557112 /* hw3 */,
 				B06429171FA2418D00617999 /* program3 */,
 				B08131531FB5A9D100C142CF /* program4 */,
+				B0C151DC1FD54971002E326E /* program5 */,
 			);
 		};
 /* End PBXProject section */
@@ -817,6 +878,16 @@
 				B057FC251FBC2353009C3441 /* test.c in Sources */,
 				B08131601FB5B88300C142CF /* pq.c in Sources */,
 				B08131571FB5A9D100C142CF /* pq.h in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B0C151D91FD54971002E326E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B0C151E01FD54972002E326E /* fakemake.c in Sources */,
+				B0C151E81FD549F9002E326E /* freq.c in Sources */,
+				B0C151E51FD549E1002E326E /* hmap.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1095,6 +1166,30 @@
 			};
 			name = Release;
 		};
+		B0C151E11FD54972002E326E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		B0C151E21FD54972002E326E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		B0D9BA7A1F64F37B00692E5C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1308,6 +1403,15 @@
 			buildConfigurations = (
 				B08131581FB5A9D100C142CF /* Debug */,
 				B08131591FB5A9D100C142CF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B0C151E31FD54972002E326E /* Build configuration list for PBXNativeTarget "program5" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B0C151E11FD54972002E326E /* Debug */,
+				B0C151E21FD54972002E326E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

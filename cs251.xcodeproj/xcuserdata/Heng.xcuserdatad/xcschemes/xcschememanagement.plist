@@ -22,7 +22,7 @@
 		<key>hw3.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>8</integer>
+			<integer>7</integer>
 		</dict>
 		<key>lab3.xcscheme</key>
 		<dict>
@@ -32,7 +32,7 @@
 		<key>lab7.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>7</integer>
+			<integer>8</integer>
 		</dict>
 		<key>program1.xcscheme</key>
 		<dict>
@@ -58,6 +58,11 @@
 		<dict>
 			<key>orderHint</key>
 			<integer>10</integer>
+		</dict>
+		<key>program5.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>11</integer>
 		</dict>
 		<key>test.xcscheme</key>
 		<dict>
@@ -93,6 +98,11 @@
 			<true/>
 		</dict>
 		<key>B07A172D1F79DEB5004CEAB5</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>B0C151DC1FD54971002E326E</key>
 		<dict>
 			<key>primary</key>
 			<true/>

@@ -7,69 +7,57 @@
 //
 
 #include <stdio.h>
-#define Parent(i) (i*2)
+#include <stdlib.h>
+#include <string.h>
 
-int f(int n)
+
+
+
+int main ()
 {
-    if(n == 0)
+    char str[] ="This\n";
+    char * pch;
+    char* pch2;
+    //printf ("Splitting string \"%s\" into tokens:\n\n`",str);
+    printf("string: %s",str);
+    pch = strtok (str,"\n");
+    pch2 = strtok(NULL, "");
+    
+    printf("pch %s",pch);
+    int i;
+    while (pch[i] != '\0')
     {
-        return 0;
-        
-    }
-    if(n == 1)
-        return 1;
-    
-    return f(n - 1) + f(n - 2);
-}
-
-typedef struct Node
-{
-    int x;
-}Node;
-
-void switchNode(Node** r)
-{
-    Node* new_node = malloc(sizeof(Node));
-    new_node->x = 10;
-    *r = new_node;
-}
-
-int main(int argc, const char * argv[]) {
-    // insert code here...
-    printf("Testing: %d\n",Parent(7));
-    return 0;
-    
-    Node* r;
-    switchNode(&r);
-    printf("After switch node x value %d \n",r->x);
-    
-    
-    
-    printf("Hello, World!\n");
-    char line[] = {'1','2','\0'};
-    int i = 0;
-    int number = 0;
-    int first_pro;
-    int place = 1;
-    while(line[i] >= 48 && line[i] <= 57)
-    {
-        first_pro = line[i] - 48;
-        //printf("first_pro%d\n",first_pro);
-        number += first_pro * place;
-        place *= 10;
+        printf("%c",pch[i]);
         i++;
     }
-    //printf(" %d ",number);
+    printf("pch2 %strt",pch2);
     
-    int reverse = 0;
-    int remain;
-    while(number != 0)
+    while (pch != NULL)
     {
-        remain = number%10;
-        reverse = reverse * 10 + remain;
-        number /= 10;
-        
+        printf ("%s\n",pch);
+        pch = strtok (NULL, " ");
     }
-    printf("%d\n",reverse*reverse);
+    
+    if(strcmp("this\n", "this") == 0)
+    {
+        printf("Same\n");
+    }
+    printf("===========================\n\n\n");
+    char** twoD;
+    twoD = malloc(sizeof(char*)*3);
+    char* index0 = malloc(sizeof(char)*8);
+    index0 = "1234567\0";
+    char* index1 = malloc(sizeof(char)*5);
+    index1 = "1234\0";
+    twoD[0] = "abcdef";
+    twoD[1] = "zbcd";
+    printf("index0 %s\n",twoD[0]);
+    printf("index1 %s\n",twoD[1]);
+    
+    
+    
+    
     return 0;
 }
+
+

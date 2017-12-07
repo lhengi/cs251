@@ -69,8 +69,8 @@ void analyze() {
   
 
   
-
+/*
 
 int main(int argc, char *argv[]) {
   analyze();
-}
+}*/

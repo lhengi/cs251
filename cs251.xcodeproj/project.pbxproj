@@ -32,7 +32,6 @@
 		B08A15A91FD726CF00434586 /* t8.c in Sources */ = {isa = PBXBuildFile; fileRef = B08A15A81FD726CF00434586 /* t8.c */; };
 		B08A15AB1FD726D600434586 /* t11.c in Sources */ = {isa = PBXBuildFile; fileRef = B08A15AA1FD726D600434586 /* t11.c */; };
 		B08A15AD1FD726DB00434586 /* tutil.c in Sources */ = {isa = PBXBuildFile; fileRef = B08A15AC1FD726DB00434586 /* tutil.c */; };
-		B0C151E01FD54972002E326E /* fakemake.c in Sources */ = {isa = PBXBuildFile; fileRef = B0C151DF1FD54972002E326E /* fakemake.c */; };
 		B0C151E51FD549E1002E326E /* hmap.c in Sources */ = {isa = PBXBuildFile; fileRef = B0C151E41FD549E1002E326E /* hmap.c */; };
 		B0C151E81FD549F9002E326E /* freq.c in Sources */ = {isa = PBXBuildFile; fileRef = B0C151E71FD549F8002E326E /* freq.c */; };
 		B0D9BA791F64F37B00692E5C /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = B0D9BA781F64F37B00692E5C /* main.c */; };
@@ -203,7 +202,6 @@
 		B08A15AA1FD726D600434586 /* t11.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = t11.c; sourceTree = "<group>"; };
 		B08A15AC1FD726DB00434586 /* tutil.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tutil.c; sourceTree = "<group>"; };
 		B0C151DD1FD54971002E326E /* program5 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = program5; sourceTree = BUILT_PRODUCTS_DIR; };
-		B0C151DF1FD54972002E326E /* fakemake.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = fakemake.c; sourceTree = "<group>"; };
 		B0C151E41FD549E1002E326E /* hmap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = hmap.c; sourceTree = "<group>"; };
 		B0C151E61FD549EB002E326E /* hmap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = hmap.h; sourceTree = "<group>"; };
 		B0C151E71FD549F8002E326E /* freq.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = freq.c; sourceTree = "<group>"; };
@@ -427,7 +425,6 @@
 				B0C151E91FD54A02002E326E /* hmap-readme.txt */,
 				B0C151E61FD549EB002E326E /* hmap.h */,
 				B0C151E41FD549E1002E326E /* hmap.c */,
-				B0C151DF1FD54972002E326E /* fakemake.c */,
 				B06063BE1FD7C6E600E5ED8E /* make.c */,
 			);
 			path = program5;
@@ -904,7 +901,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B0C151E01FD54972002E326E /* fakemake.c in Sources */,
 				B06063BF1FD7C6E600E5ED8E /* make.c in Sources */,
 				B0C151E81FD549F9002E326E /* freq.c in Sources */,
 				B0C151E51FD549E1002E326E /* hmap.c in Sources */,
